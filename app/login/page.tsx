@@ -1,76 +1,105 @@
-import Link from "next/link"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+"use client";
+import Link from "next/link";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import CustomizeTextField from "@/components/shared/CustomizeTextField";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import AuthLayout from "@/components/layouts/authLayout";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-export default function LoginPage() {
+const LoginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type FormData = z.infer<typeof LoginSchema>;
+
+function LoginPage() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const route = useRouter();
+
+  const methods = useForm<FormData>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = methods;
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      console.log(data);
+      route.push("/");
+      toast.success("Logged in successfully!");
+    } catch (e) {
+      setIsLoading(true);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 relative">
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('/recycling-warehouse-with-bottles.jpg')",
-          }}
-        >
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
-
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-200px)] py-12 px-4">
-          {/* Welcome Banner */}
-          <div className="bg-secondary text-white text-center px-8 py-4 rounded-lg mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold">Welcome Back !</h1>
-            <p className="text-sm mt-1">Sign In & Earn Rewards</p>
+    <AuthLayout>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)} className="w-full">
+          <div className="space-y-4">
+            <CustomizeTextField
+              name="email"
+              as="input"
+              disabled={isLoading}
+              type="text"
+              label="Email Address"
+              placeholder="you@example.com"
+            />
+            <CustomizeTextField
+              name="password"
+              as="input"
+              disabled={isLoading}
+              type="password"
+              label="Password"
+              placeholder="••••••••"
+            />
           </div>
 
-          {/* Login Form */}
-          <div className="bg-card rounded-2xl shadow-xl p-8 w-full max-w-md">
-            <h2 className="text-2xl font-serif text-primary text-center mb-8">Join Us</h2>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full mt-6 h-10 font-medium"
+          >
+            {isLoading ? "Signing in..." : "Sign In"}
+          </Button>
 
-            <form className="space-y-6">
-              <div>
-                <label className="block text-sm text-foreground mb-2">Username</label>
-                <input
-                  type="text"
-                  placeholder="Username"
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-foreground mb-2">Password</label>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              <div className="text-right">
-                <Link href="#" className="text-sm text-muted hover:text-primary">
-                  Forgot Password?
-                </Link>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-primary text-white py-3 rounded-full font-medium hover:bg-primary-dark transition-colors"
+          <div className="mt-6 text-center">
+            <p className="text-muted-foreground text-sm">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/sign-up"
+                className="text-primary hover:text-primary/90 font-semibold transition-colors"
               >
-                Join Us
-              </button>
-
-              <p className="text-center text-sm text-muted">
-                Don't have an account?{" "}
-                <Link href="/signup" className="text-primary hover:underline font-medium">
-                  Register
-                </Link>
-              </p>
-            </form>
+                Create one
+              </Link>
+            </p>
           </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
-  )
+
+          {/* <div className="mt-6">
+            <Link
+              href="/forgot-password"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Forgot your password?
+            </Link>
+          </div> */}
+        </form>
+      </FormProvider>
+    </AuthLayout>
+  );
 }
+export default LoginPage;
