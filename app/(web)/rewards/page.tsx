@@ -1,257 +1,155 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import {
+  useConvertPointsMutation,
+  useGetUserPointsQuery,
+} from "@/redux/features/profile/profileApi";
 
 export default function RewardsPage() {
-  const [selectedAmount, setSelectedAmount] = useState<string>("100");
-  const [selectedWallet, setSelectedWallet] = useState<string>("wallet");
-  const [showBankForm, setShowBankForm] = useState(false);
-  const [showWalletForm, setShowWalletForm] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const { data: userData, isLoading: loadingPoints } = useGetUserPointsQuery();
 
-  const handleConvert = () => {
-    if (selectedWallet === "bank") {
-      setShowBankForm(true);
-    } else {
-      setShowWalletForm(true);
+  const [convertPoints, { isLoading }] = useConvertPointsMutation();
+
+  const [selectedPoints, setSelectedPoints] = useState<number>(100);
+  const [fullName, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const userPoints = userData?.points ?? 0;
+
+  const handleSubmit = async () => {
+    setError(null);
+
+    if (!fullName || !phoneNumber) {
+      setError("Please enter your name and phone number");
+      return;
+    }
+
+    if (selectedPoints > userPoints) {
+      setError("You don't have enough points");
+      return;
+    }
+
+    try {
+      await convertPoints({
+        fullName,
+        phoneNumber,
+        points: selectedPoints,
+      }).unwrap();
+
+      setSuccess(true);
+    } catch (err) {
+      setError("Conversion failed. Please try again.");
     }
   };
 
-  const handleSubmit = () => {
-    setShowBankForm(false);
-    setShowWalletForm(false);
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
-  };
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1 bg-accent/10">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          {/* Title */}
-          <h1 className="font-serif text-3xl md:text-4xl text-primary text-center mb-12">
-            Convert Your Points to Money
-          </h1>
+    <div className="min-h-screen bg-accent/10 py-12 px-4">
+      <div className="max-w-xl mx-auto space-y-8">
+        {/* Title */}
+        <h1 className="text-3xl font-serif text-primary text-center">
+          Convert Points
+        </h1>
 
-          {/* Points Balance Card */}
-          <div className="bg-card rounded-2xl shadow-sm p-6 max-w-md mx-auto mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="font-semibold text-lg">Your Points Balance</h2>
-              <Button className="contain-paint">History</Button>
-            </div>
-            <div className="text-center">
-              <span className="text-3xl font-bold text-primary">
-                600 Points
-              </span>
-              <p className="text-sm text-muted mt-1">
-                Equivalent Value: 60 EGP
-              </p>
-            </div>
-          </div>
+        {/* Balance Card */}
+        <div className="bg-card rounded-2xl shadow-sm p-6 text-center">
+          <p className="text-sm text-muted mb-1">Your Points Balance</p>
+          <p className="text-4xl font-bold text-primary">
+            {loadingPoints ? "..." : userPoints}
+          </p>
+          <p className="text-sm text-muted mt-2">
+            Equivalent Value: {userPoints / 10} EGP
+          </p>
+        </div>
 
-          {/* Conversion Options */}
-          <div className="bg-card rounded-2xl shadow-sm p-6 max-w-md mx-auto mb-8">
-            <h3 className="font-semibold mb-4">Choose Amount to convert</h3>
+        {/* Amount Selection */}
+        <div className="bg-card rounded-2xl shadow-sm p-6">
+          <h3 className="font-semibold mb-4">Choose Amount</h3>
 
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="amount"
-                  value="100"
-                  checked={selectedAmount === "100"}
-                  onChange={(e) => setSelectedAmount(e.target.value)}
-                  className="accent-primary"
-                />
-                <span className="text-sm">100 Points = 10 EGP</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="amount"
-                  value="custom"
-                  checked={selectedAmount === "custom"}
-                  onChange={(e) => setSelectedAmount(e.target.value)}
-                  className="accent-primary"
-                />
-                <span className="text-sm">Custom Amount</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="amount"
-                  value="500"
-                  checked={selectedAmount === "500"}
-                  onChange={(e) => setSelectedAmount(e.target.value)}
-                  className="accent-primary"
-                />
-                <span className="text-sm">500 Points = 50 EGP</span>
-              </label>
-              <div>
-                {selectedAmount === "custom" && (
-                  <input
-                    type="text"
-                    placeholder="enter your amount"
-                    className="w-full px-3 py-2 border border-border rounded-lg text-sm"
-                  />
-                )}
-              </div>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="amount"
-                  value="1000"
-                  checked={selectedAmount === "1000"}
-                  onChange={(e) => setSelectedAmount(e.target.value)}
-                  className="accent-primary"
-                />
-                <span className="text-sm">1000 Points = 100 EGP</span>
-              </label>
-            </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {Array.from({ length: 10 }, (_, i) => (i + 1) * 100).map(
+              (points) => {
+                const egp = points / 10;
 
-            <h3 className="font-semibold mb-4">Select Wallet</h3>
-            <div className="space-y-2 mb-6">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="wallet"
-                  value="wallet"
-                  checked={selectedWallet === "wallet"}
-                  onChange={(e) => setSelectedWallet(e.target.value)}
-                  className="accent-primary"
-                />
-                <span className="text-sm">Wallet Balance</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="wallet"
-                  value="bank"
-                  checked={selectedWallet === "bank"}
-                  onChange={(e) => setSelectedWallet(e.target.value)}
-                  className="accent-primary"
-                />
-                <span className="text-sm">Bank Transfer</span>
-              </label>
-            </div>
-
-            <button
-              onClick={handleConvert}
-              className="w-full bg-secondary text-white py-3 rounded-full font-medium hover:bg-secondary-light transition-colors"
-            >
-              Convert
-            </button>
-          </div>
-
-          {/* Transfer Forms & Success Messages */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Bank Transfer Form */}
-            {showBankForm && (
-              <div className="bg-card rounded-2xl shadow-sm p-6">
-                <h3 className="font-semibold text-center mb-4">
-                  Bank Transfer
-                </h3>
-                <form className="space-y-4">
-                  <div>
-                    <label className="block text-sm text-muted mb-1">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-border rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-muted mb-1">
-                      Card Number
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-border rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-muted mb-1">
-                      Expiry Date
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-border rounded-lg"
-                    />
-                  </div>
+                return (
                   <button
-                    type="button"
-                    onClick={handleSubmit}
-                    className="w-full bg-primary text-white py-2 rounded-full font-medium hover:bg-primary-dark transition-colors"
+                    key={points}
+                    onClick={() => setSelectedPoints(points)}
+                    className={`flex flex-col items-center justify-center py-3 rounded-xl border text-sm font-medium transition
+          ${
+            selectedPoints === points
+              ? "bg-primary text-white border-primary"
+              : "bg-white border-border hover:bg-accent/20"
+          }`}
                   >
-                    Convert
+                    <span className="font-semibold">{points} Points</span>
+                    <span
+                      className={`text-xs mt-1 ${
+                        selectedPoints === points
+                          ? "text-white/80"
+                          : "text-muted"
+                      }`}
+                    >
+                      = {egp} EGP
+                    </span>
                   </button>
-                </form>
-              </div>
-            )}
-
-            {/* Wallet Transfer Form */}
-            {showWalletForm && (
-              <div className="bg-card rounded-2xl shadow-sm p-6">
-                <h3 className="font-semibold text-center mb-4">
-                  Wallet Transfer
-                </h3>
-                <form className="space-y-4">
-                  <div>
-                    <label className="block text-sm text-muted mb-1">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-border rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-muted mb-1">
-                      Wallet Number
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-border rounded-lg"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleSubmit}
-                    className="w-full bg-primary text-white py-2 rounded-full font-medium hover:bg-primary-dark transition-colors"
-                  >
-                    Convert
-                  </button>
-                </form>
-              </div>
-            )}
-
-            {/* Success Message */}
-            {showSuccess && (
-              <div className="bg-card rounded-2xl shadow-sm p-6 text-center">
-                <h3 className="font-semibold mb-4">
-                  {selectedWallet === "bank"
-                    ? "Bank Transfer"
-                    : "Wallet Transfer"}
-                </h3>
-                <div className="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center mx-auto mb-4">
-                  <Check className="w-8 h-8 text-secondary" />
-                </div>
-                <p className="text-secondary font-semibold mb-2">
-                  Conversion Successful
-                </p>
-                <p className="text-sm text-muted">
-                  Your points have been converted successfully.
-                </p>
-              </div>
+                );
+              },
             )}
           </div>
         </div>
-      </main>
+
+        {/* Form */}
+        {!success && (
+          <div className="bg-card rounded-2xl shadow-sm p-6 space-y-4">
+            <h3 className="font-semibold text-center">Receiver Details</h3>
+
+            <input
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Full Name"
+              className="w-full px-4 py-2 border border-border rounded-lg"
+            />
+
+            <input
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="Phone Number"
+              className="w-full px-4 py-2 border border-border rounded-lg"
+            />
+
+            {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            )}
+
+            <button
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="w-full bg-secondary text-white py-3 rounded-full font-medium hover:bg-secondary-light transition disabled:opacity-50"
+            >
+              {isLoading ? "Processing..." : "Convert Points"}
+            </button>
+          </div>
+        )}
+
+        {/* Success */}
+        {success && (
+          <div className="bg-card rounded-2xl shadow-sm p-8 text-center">
+            <div className="w-16 h-16 mx-auto rounded-full bg-secondary/20 flex items-center justify-center mb-4">
+              <Check className="w-8 h-8 text-secondary" />
+            </div>
+            <p className="text-xl font-semibold text-secondary mb-2">
+              Conversion Successful
+            </p>
+            <p className="text-sm text-muted">
+              Your points have been converted successfully.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

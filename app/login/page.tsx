@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import AuthLayout from "@/components/layouts/authLayout";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
 
 const LoginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -19,6 +20,8 @@ type FormData = z.infer<typeof LoginSchema>;
 
 function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+
+  const [loginUser] = useLoginMutation();
 
   const route = useRouter();
 
@@ -38,8 +41,11 @@ function LoginPage() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      console.log(data);
-      route.push("/");
+      loginUser({
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+      // route.push("/");
       toast.success("Logged in successfully!");
     } catch (e) {
       setIsLoading(true);

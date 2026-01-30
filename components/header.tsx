@@ -1,24 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, LogIn } from "lucide-react";
+import { Menu, X, LogIn, User } from "lucide-react";
 import Image from "next/image";
+import { getCookie } from "cookies-next";
 import LogoImage from "@/public/logo.png";
 import { Button } from "./ui/button";
+import { useLogout } from "./Logout";
 
 const navItems = [
   { name: "Home", href: "/" },
   { name: "About Us", href: "/about" },
   { name: "Recycle", href: "/recycle" },
-  { name: "Rewards", href: "/rewards" },
+  { name: "Rewards", href: "/rewards", authOnly: true },
   { name: "Contact Us", href: "/contact" },
 ];
 
 export function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+
+  const logout = useLogout();
+
+  // Check token from cookies on client
+  useEffect(() => {
+    setToken(getCookie("token")?.toString() || null);
+  }, []);
+
+  const filteredNavItems = navItems.filter(
+    (item) => !item.authOnly || (item.authOnly && token),
+  );
 
   return (
     <header className="sticky top-0 z-50 bg-card shadow-sm">
@@ -32,7 +46,7 @@ export function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-3">
-            {navItems.map((item) => {
+            {filteredNavItems.map((item) => {
               const isActive =
                 pathname === item.href ||
                 (item.href !== "/" && pathname.startsWith(item.href + "/"));
@@ -54,14 +68,33 @@ export function Header() {
             })}
           </nav>
 
-          {/* Login */}
-          <Link
-            href="/login"
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition"
-          >
-            <LogIn className="w-4 h-4" />
-            Login
-          </Link>
+          {/* Login / Profile */}
+          {token ? (
+            <div className="flex items-center  gap-4">
+              <Link
+                href="/profile"
+                className="hidden md:flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition"
+              >
+                <User className="w-4 h-4" />
+                Profile
+              </Link>
+              <Button
+                onClick={logout}
+                variant="outline"
+                className="hidden  md:flex px-4 py-2 rounded-lg text-sm font-semibold border-destructive text-destructive hover:bg-destructive/10 hover:text-primary !contain-paint"
+              >
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition"
+            >
+              <LogIn className="w-4 h-4" />
+              Login
+            </Link>
+          )}
 
           {/* Mobile Menu Button */}
           <button
@@ -75,7 +108,7 @@ export function Header() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <nav className="md:hidden flex flex-col gap-2 py-4 border-t">
-            {navItems.map((item) => {
+            {filteredNavItems.map((item) => {
               const isActive = pathname === item.href;
 
               return (
@@ -92,14 +125,30 @@ export function Header() {
               );
             })}
 
-            <Link
-              href="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="mt-2 flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-white text-sm font-medium"
-            >
-              <LogIn className="w-4 h-4" />
-              Login
-            </Link>
+            {token ? (
+              <div>
+                <Link
+                  href="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="mt-2 flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-white text-sm font-medium"
+                >
+                  <User className="w-4 h-4" />
+                  Profile
+                </Link>
+                <Button className="mt-2 w-full" onClick={logout}>
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="mt-2 flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-white text-sm font-medium"
+              >
+                <LogIn className="w-4 h-4" />
+                Login
+              </Link>
+            )}
           </nav>
         )}
       </div>

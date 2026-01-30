@@ -3,6 +3,7 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { MapPin, Phone, Mail } from "lucide-react";
+import ContactForm from "@/components/shared/Contact";
 
 export default function ContactPage() {
   return (
@@ -79,76 +80,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Contact Form */}
-          <div className="bg-card rounded-2xl shadow-sm p-8 max-w-4xl mx-auto">
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm text-foreground mb-2">
-                    Name / Surname
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="drew"
-                    className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-foreground mb-2">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    placeholder="01xxxxxxxxx"
-                    className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm text-foreground mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="emailexample@gmail.com"
-                    className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-foreground mb-2">
-                    Country
-                  </label>
-                  <select className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/20">
-                    <option>EGYPT</option>
-                    <option>Saudi Arabia</option>
-                    <option>UAE</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm text-foreground mb-2">
-                  Message
-                </label>
-                <textarea
-                  rows={4}
-                  placeholder="Enter Your message..."
-                  className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
-                />
-              </div>
-
-              <div className="text-center">
-                <button
-                  type="submit"
-                  className="bg-primary text-white px-12 py-3 rounded-full font-medium hover:bg-primary-dark transition-colors"
-                >
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
+          <ContactForm />
         </div>
       </main>
     </div>

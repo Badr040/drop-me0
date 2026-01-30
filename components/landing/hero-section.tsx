@@ -65,12 +65,12 @@ export function HeroSection() {
           >
             Learn More
           </Link>
-          <Link
+          {/* <Link
             href="/sign-up"
             className="border border-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-black transition"
           >
             Join the Mission
-          </Link>
+          </Link> */}
         </div>
       </div>
     </section>

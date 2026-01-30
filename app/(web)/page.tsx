@@ -1,8 +1,5 @@
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { HeroSection } from "@/components/landing/hero-section";
 import { ProgramsSection } from "@/components/landing/programs-section";
-import Link from "next/link";
 import WhySection from "@/components/landing/why-section";
 import { ImpactSection } from "@/components/landing/Impact";
 

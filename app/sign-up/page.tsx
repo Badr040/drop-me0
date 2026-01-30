@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import AuthLayout from "@/components/layouts/authLayout";
 import { z } from "zod";
 import CustomizeTextField from "@/components/shared/CustomizeTextField";
+import { useSignUpMutation } from "@/redux/features/auth/authApi";
 
 export const SignUpSchema = z
   .object({
@@ -18,7 +19,7 @@ export const SignUpSchema = z
     gender: z.enum(["male", "female"], {
       required_error: "Gender is required",
     }),
-    birthDate: z.string().min(1, "Date of birth is required"),
+    dateOfBirth: z.string().min(1, "Date of birth is required"),
     country: z.string().min(1, "Country is required"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
@@ -32,13 +33,15 @@ export const SignUpSchema = z
 export type SignUpFormData = z.infer<typeof SignUpSchema>;
 
 export default function SignUpPage() {
+  const [signUpUser] = useSignUpMutation();
+
   const methods = useForm<SignUpFormData>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
       gender: undefined,
-      birthDate: "",
+      dateOfBirth: "",
       country: "",
       email: "",
       password: "",
@@ -48,7 +51,16 @@ export default function SignUpPage() {
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
-      console.log(data);
+      signUpUser({
+        fName: data.firstName,
+        lName: data.lastName,
+        gender: data.gender,
+        dateOfBirth: data.dateOfBirth,
+        country: data.country,
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+      }).unwrap();
     } catch (e) {
       console.log(e);
     }
@@ -108,7 +120,7 @@ export default function SignUpPage() {
           {/* Birth + Country */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <CustomizeTextField
-              name="birthDate"
+              name="dateOfBirth"
               label="Date of Birth"
               type="date"
             />
