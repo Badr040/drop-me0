@@ -18,13 +18,11 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
 
-  // 1. حالة العدادات (هنا بنحط الأرقام اللي عايزها تظهر)
   const [counts, setCounts] = useState({
     requests: 5,
     transactions: 2,
   });
 
-  // 2. الكود المسؤول عن "تصفير" العداد لما تفتح الصفحة
   useEffect(() => {
     if (pathname === "/admin/requests") {
       setCounts((prev) => ({ ...prev, requests: 0 }));
@@ -32,7 +30,7 @@ export default function AdminLayout({
     if (pathname === "/admin/transaction") {
       setCounts((prev) => ({ ...prev, transactions: 0 }));
     }
-  }, [pathname]); // بيشتغل كل ما تغير الصفحة
+  }, [pathname]);
 
   const menuItems = [
     {

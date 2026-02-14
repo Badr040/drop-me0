@@ -9,7 +9,7 @@ import {
 
 export default function RewardsPage() {
   const { data: userData, isLoading: loadingPoints } = useGetUserPointsQuery();
-
+  console.log("userData", userData);
   const [convertPoints, { isLoading }] = useConvertPointsMutation();
 
   const [selectedPoints, setSelectedPoints] = useState<number>(100);
@@ -58,7 +58,8 @@ export default function RewardsPage() {
         <div className="bg-card rounded-2xl shadow-sm p-6 text-center">
           <p className="text-sm text-muted mb-1">Your Points Balance</p>
           <p className="text-4xl font-bold text-primary">
-            {loadingPoints ? "..." : userPoints}
+            {/* {loadingPoints ? "..." : userPoints}  */}
+            {userData?.points}
           </p>
           <p className="text-sm text-muted mt-2">
             Equivalent Value: {userPoints / 10} EGP

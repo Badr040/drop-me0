@@ -16,7 +16,6 @@ const baseQuery = fetchBaseQuery({
     // Read token directly from cookies
     const token = getCookie("token")?.toString();
     if (token) headers.set("authorization", `Bearer ${token}`);
-    // headers.set("accept-language", "en");
     return headers;
   },
 });
@@ -53,6 +52,6 @@ const baseQueryWithInterceptor: typeof baseQuery = async (
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithInterceptor,
-  tagTypes: ["Profile"],
+  tagTypes: ["Profile", "Users", "ContactUs", "Conversions"],
   endpoints: () => ({}),
 });

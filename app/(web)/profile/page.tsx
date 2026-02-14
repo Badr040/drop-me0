@@ -62,7 +62,7 @@ export default function Profile() {
       <div className="bg-blue-50 p-4 rounded-lg text-center">
         <span className="text-xs text-blue-400 uppercase">Points</span>
         <p className="text-2xl font-bold text-blue-700 mt-1">
-          {pointsData?.points || 0}
+          {userData?.user?.points}
         </p>
       </div>
     </div>

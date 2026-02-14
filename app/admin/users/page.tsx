@@ -7,9 +7,16 @@ import {
   Calendar,
   Fingerprint,
   UserCircle,
+  Activity,
+  Edit,
+  Trash,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useGetAllUserQuery } from "@/redux/features/users/usersApi";
 
 export default function UsersRegistry() {
+  const { data: getAllUser } = useGetAllUserQuery();
+
   const [searchTerm, setSearchTerm] = useState("");
 
   const initialUsers = [
@@ -55,17 +62,22 @@ export default function UsersRegistry() {
       </h2>
 
       <div className="relative max-w-sm">
-        <Search
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-          size={18}
-        />
-        <input
-          type="text"
-          placeholder="Search all records..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-12 pr-4 py-4 rounded-[20px] border-none shadow-xl shadow-slate-200/50 text-xs font-bold outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <div className="flex items-center justify-between">
+          <div>
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+              size={18}
+            />
+            <input
+              type="text"
+              placeholder="Search all records..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-12 pr-4 py-4 rounded-[20px] border-none shadow-xl shadow-slate-200/50 text-xs font-bold outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <Button className="">Create New User</Button>
+        </div>
       </div>
 
       <div className="bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-100">
@@ -81,9 +93,9 @@ export default function UsersRegistry() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
-            {filteredUsers.map((user) => (
+            {getAllUser?.users.map((user) => (
               <tr
-                key={user.id}
+                key={user._id}
                 className="hover:bg-blue-50/20 transition-all group"
               >
                 <td className="p-6">
@@ -92,13 +104,15 @@ export default function UsersRegistry() {
                       <Fingerprint size={14} />
                     </div>
                     <span className="font-mono text-sm font-black text-[#0f172a]">
-                      {user.id}
+                      {user._id}
                     </span>
                   </div>
                 </td>
+
                 <td className="p-6 font-black text-[#0f172a] italic uppercase text-xs">
-                  {user.name}
+                  {user.fullName}
                 </td>
+
                 <td className="p-6 space-y-1">
                   <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
                     <Mail size={12} /> {user.email}
@@ -107,20 +121,24 @@ export default function UsersRegistry() {
                     <Phone size={12} /> {user.phone}
                   </div>
                 </td>
+
                 <td className="p-6">
                   <span className="text-[10px] font-black text-slate-500 italic uppercase">
                     {user.gender}
                   </span>
                 </td>
+
                 <td className="p-6">
                   <div className="font-black text-[#0f172a] italic text-sm">
-                    {user.transferred}{" "}
-                    <span className="text-[9px] text-slate-300">EGP</span>
+                    {user.balance}
+                    <span className="text-[9px] text-slate-300 ml-1">EGP</span>
                   </div>
                 </td>
+
                 <td className="p-6 text-right">
-                  <div className="inline-flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl text-[9px] font-black text-slate-400 italic border border-slate-100">
-                    <Calendar size={12} /> {user.date}
+                  <div className="inline-flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl text-[9px] font-black">
+                    <Edit className="text-yellow-300 cursor-pointer" />
+                    <Trash className="text-red-500 cursor-pointer" />
                   </div>
                 </td>
               </tr>

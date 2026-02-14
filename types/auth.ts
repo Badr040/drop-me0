@@ -1,6 +1,7 @@
 export interface LoginDTO {
   email: string;
   password: string;
+  role: "admin" | "user";
 }
 
 export interface SignUpDTO {
@@ -12,12 +13,10 @@ export interface SignUpDTO {
   country: string;
   dateOfBirth: string;
   gender: "male" | "female";
+  role: "admin" | "user";
 }
 
-/**
- * Response اللي راجع من الـ backend
- * عدل الاسم لو الـ API عندك مختلف
- */
 export interface AuthResponse {
   token: string;
+  role: "user" | "admin";
 }

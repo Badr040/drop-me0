@@ -3,6 +3,7 @@ import { IConvertPointsResponse, IUser, IUserPoints } from "@/types/profile";
 
 const profileApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // get user by id
     getUser: builder.query<IUser, void>({
       query: () => ({
         url: "/users/me",
@@ -13,7 +14,7 @@ const profileApi = baseApi.injectEndpoints({
 
     getUserPoints: builder.query<IUserPoints, void>({
       query: () => ({
-        url: "/users/me",
+        url: "/users/points",
         method: "GET",
       }),
       providesTags: ["Profile"],

@@ -1,9 +1,11 @@
 "use client";
 import React from "react";
 import { Mail, Phone, MessageSquare, User, Clock, Trash2 } from "lucide-react";
+import { useGetContactUsQuery } from "@/redux/features/contactUs/contactApi";
 
 export default function ContactRequests() {
-  // بيانات وهمية (Static Data) بالإنجليزي عشان الصفحة تنطق
+  const { data: ContactUs } = useGetContactUsQuery();
+
   const requests = [
     {
       id: 1,
@@ -41,20 +43,19 @@ export default function ContactRequests() {
               <th className="p-6">Client Identity</th>
               <th className="p-6">Contact Details</th>
               <th className="p-6">Message Body</th>
-              <th className="p-6 text-right">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
-            {requests.map((req) => (
+            {ContactUs?.contacts.map((req) => (
               <tr
-                key={req.id}
+                key={req._id}
                 className="hover:bg-blue-50/10 transition-all group"
               >
                 <td className="p-6">
                   <div className="flex items-center gap-2">
                     <User size={14} className="text-blue-500" />
                     <span className="font-black text-[#0f172a] italic uppercase text-xs">
-                      {req.name}
+                      {req.fullName}
                     </span>
                   </div>
                 </td>
@@ -63,7 +64,7 @@ export default function ContactRequests() {
                     <Mail size={12} /> {req.email}
                   </div>
                   <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
-                    <Phone size={12} /> {req.phone}
+                    <Phone size={12} /> {req.phoneNumber}
                   </div>
                 </td>
                 <td className="p-6">
@@ -76,9 +77,6 @@ export default function ContactRequests() {
                       {req.message}
                     </p>
                   </div>
-                </td>
-                <td className="p-6 text-right text-[10px] font-black text-blue-600 italic uppercase">
-                  Pending
                 </td>
               </tr>
             ))}

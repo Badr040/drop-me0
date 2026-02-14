@@ -14,7 +14,7 @@ const authApi = baseApi.injectEndpoints({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          dispatch(setUser({ token: data.token }));
+          dispatch(setUser({ token: data.token, role: data.role }));
 
           if (typeof window !== "undefined") {
             window.location.href = "/";
@@ -35,7 +35,7 @@ const authApi = baseApi.injectEndpoints({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          dispatch(setUser({ token: data.token }));
+          dispatch(setUser({ token: data.token, role: data.role }));
 
           if (typeof window !== "undefined") {
             window.location.href = "/";

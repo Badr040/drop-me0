@@ -14,6 +14,7 @@ import { useLoginMutation } from "@/redux/features/auth/authApi";
 const LoginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+  role: z.enum(["admin", "user"]),
 });
 
 type FormData = z.infer<typeof LoginSchema>;
@@ -30,6 +31,7 @@ function LoginPage() {
     defaultValues: {
       email: "",
       password: "",
+      role: "user",
     },
   });
 
@@ -44,6 +46,7 @@ function LoginPage() {
       loginUser({
         email: data.email,
         password: data.password,
+        role: "user",
       }).unwrap();
       // route.push("/");
       toast.success("Logged in successfully!");

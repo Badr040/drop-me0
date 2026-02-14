@@ -1,4 +1,5 @@
 import { baseApi } from "@/redux/app/baseApi";
+import { GetContactsResponse } from "@/types/contactUs";
 
 const contactApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,7 +19,17 @@ const contactApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+
+    // get contactUs
+    getContactUs: builder.query<GetContactsResponse, void>({
+      query: () => ({
+        url: "/users/contactUs",
+        method: "GET",
+      }),
+      providesTags: ["ContactUs"],
+    }),
   }),
 });
 
-export const { useSendContactMessageMutation } = contactApi;
+export const { useSendContactMessageMutation, useGetContactUsQuery } =
+  contactApi;

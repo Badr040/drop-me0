@@ -24,6 +24,7 @@ export const SignUpSchema = z
     email: z.string().email("Invalid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
+    role: z.enum(["admin", "user"]),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
@@ -46,6 +47,7 @@ export default function SignUpPage() {
       email: "",
       password: "",
       confirmPassword: "",
+      role: "user",
     },
   });
 
@@ -60,6 +62,7 @@ export default function SignUpPage() {
         email: data.email,
         password: data.password,
         confirmPassword: data.confirmPassword,
+        role: "user",
       }).unwrap();
     } catch (e) {
       console.log(e);
