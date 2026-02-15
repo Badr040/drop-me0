@@ -6,7 +6,7 @@ import {
   useConvertPointsMutation,
   useGetUserPointsQuery,
 } from "@/redux/features/profile/profileApi";
-
+import { toast } from "sonner";
 export default function RewardsPage() {
   const { data: userData, isLoading: loadingPoints } = useGetUserPointsQuery();
   console.log("userData", userData);
@@ -17,6 +17,7 @@ export default function RewardsPage() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [method, setMethod] = useState<"instapay" | "wallet">("instapay");
 
   const userPoints = userData?.points ?? 0;
 
@@ -25,11 +26,13 @@ export default function RewardsPage() {
 
     if (!fullName || !phoneNumber) {
       setError("Please enter your name and phone number");
+      toast.error("Please enter your name and phone number");
       return;
     }
 
     if (selectedPoints > userPoints) {
       setError("You don't have enough points");
+      toast.error("You don't have enough points");
       return;
     }
 
@@ -38,11 +41,18 @@ export default function RewardsPage() {
         fullName,
         phoneNumber,
         points: selectedPoints,
+        method,
       }).unwrap();
 
       setSuccess(true);
+
+      // ✅ success toast
+      toast.success("Points converted successfully 💰");
     } catch (err) {
       setError("Conversion failed. Please try again.");
+
+      // ❌ error toast
+      toast.error("Conversion failed. Please try again");
     }
   };
 
@@ -121,6 +131,16 @@ export default function RewardsPage() {
               placeholder="Phone Number"
               className="w-full px-4 py-2 border border-border rounded-lg"
             />
+            <select
+              value={method}
+              onChange={(e) =>
+                setMethod(e.target.value as "instapay" | "wallet")
+              }
+              className="w-full px-4 py-2 border border-border rounded-lg"
+            >
+              <option value="instapay">Instapay</option>
+              <option value="wallet">Wallet</option>
+            </select>
 
             {error && (
               <p className="text-red-500 text-sm text-center">{error}</p>

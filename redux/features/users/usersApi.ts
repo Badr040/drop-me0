@@ -1,6 +1,6 @@
 import { baseApi } from "@/redux/app/baseApi";
 import { IUser } from "@/types/profile";
-import { IUsersResponse } from "@/types/users";
+import { ICreate, IUsersResponse } from "@/types/users";
 
 const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -12,7 +12,30 @@ const usersApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Users"],
     }),
+
+    // create amin user
+    createUser: builder.mutation<void, ICreate>({
+      query: (body) => ({
+        url: "/users/createuser",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Users"],
+    }),
+
+    // delete User
+    deleteUser: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/users/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Users"],
+    }),
   }),
 });
 
-export const { useGetAllUserQuery } = usersApi;
+export const {
+  useGetAllUserQuery,
+  useCreateUserMutation,
+  useDeleteUserMutation,
+} = usersApi;

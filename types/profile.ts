@@ -31,4 +31,5 @@ export interface IConvertPointsResponse {
   fullName: string;
   points: number;
   phoneNumber: string;
+  method: "instapay" | "wallet";
 }

@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGetAllUserQuery } from "@/redux/features/users/usersApi";
+import CreateUser from "@/components/landing/createUser";
+import DeleteUser from "@/components/landing/deleteUser";
 
 export default function UsersRegistry() {
   const { data: getAllUser } = useGetAllUserQuery();
@@ -61,7 +63,7 @@ export default function UsersRegistry() {
         Users Registry
       </h2>
 
-      <div className="relative max-w-sm">
+      <div className="relative ">
         <div className="flex items-center justify-between">
           <div>
             <Search
@@ -76,7 +78,7 @@ export default function UsersRegistry() {
               className="w-full pl-12 pr-4 py-4 rounded-[20px] border-none shadow-xl shadow-slate-200/50 text-xs font-bold outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <Button className="">Create New User</Button>
+          <CreateUser />
         </div>
       </div>
 
@@ -137,8 +139,8 @@ export default function UsersRegistry() {
 
                 <td className="p-6 text-right">
                   <div className="inline-flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl text-[9px] font-black">
-                    <Edit className="text-yellow-300 cursor-pointer" />
-                    <Trash className="text-red-500 cursor-pointer" />
+                    {/* <Edit className="text-yellow-300 cursor-pointer" />  */}
+                    <DeleteUser id={user?._id} />
                   </div>
                 </td>
               </tr>
