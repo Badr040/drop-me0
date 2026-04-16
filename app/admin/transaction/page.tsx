@@ -43,7 +43,7 @@ export default function TransactionPage() {
     if (!data?.conversions) return [];
     return data.conversions.filter((tx) => {
       const searchContent =
-        `${tx.userName} ${tx.account} ${tx.createdAt}`.toLowerCase();
+        `${tx.userId.fullName} ${tx.userId.phone} ${tx.createdAt}`.toLowerCase();
       const matchesSearch = searchContent.includes(searchTerm.toLowerCase());
       const matchesFilter =
         filterStatus === "All" || getStatusUI(tx.status) === filterStatus;

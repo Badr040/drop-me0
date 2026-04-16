@@ -23,9 +23,11 @@ export default function AboutPage() {
 
           {/* Description */}
           <p className="text-center text-foreground/80 max-w-3xl mx-auto mb-12 text-lg">
-            The Drop Me project team is a group of passionate students who
-            combined innovation, technology, and environmental awareness to
-            create a smart recycling solution that makes a real impact.
+            Drop Me is a leading environmental technology firm dedicated to
+            leveraging cutting-edge innovations to redefine the concept of
+            recycling. We strive to empower communities through smart systems
+            that integrate operational efficiency with environmental
+            sustainability, contributing to a future built on a circular economy
           </p>
 
           {/* Team Image */}

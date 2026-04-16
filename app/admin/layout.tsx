@@ -96,7 +96,6 @@ export default function AdminLayout({
                   </span>
                 </div>
 
-                {/* العداد بيظهر فقط لو القيمة أكبر من 0 */}
                 {item.count > 0 && (
                   <span
                     className={`flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[10px] font-black italic shadow-sm animate-pulse ${
