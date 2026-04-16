@@ -59,3 +59,14 @@ export interface IUser {
 export interface IUsersResponse {
   users: IUser[];
 }
+
+export interface ICreate {
+  fName: string;
+  lName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  country: string;
+  dateOfBirth: string;
+  gender: "male" | "female";
+}
