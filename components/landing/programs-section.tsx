@@ -83,19 +83,19 @@ const programs = [
   {
     title: "Community Plastic-Collection Initiatives",
     description: "Collecting plastic to reduce landfill waste. Together, we keep plastic out of landfills.",
-    image: "/drop-me-exhibition.png",
+    image: "public/drop-me-exhibition.png",
     color: "text-primary",
   },
   {
     title: "Awareness & Education Program",
     description: "Teaching people how to recycle smarter.",
-    image: "/drop-me-machine-use.png",
+    image: "public/drop-me-machine-use.png",
     color: "text-secondary",
   },
   {
     title: "Eco-Innovation Support",
     description: "Supporting creative projects using recycled plastic.",
-    image: "/drop-me-vending-machine.png",
+    image: "public/drop-me-vending-machine.png",
     color: "text-primary",
   },
 ]
