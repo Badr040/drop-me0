@@ -1,5 +1,6 @@
 export interface LoginDTO {
   email: string;
+   phoneNumber: string;
   password: string;
   role: "admin" | "user";
 }
