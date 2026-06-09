@@ -14,6 +14,7 @@ const navItems = [
   { name: "Home", href: "/" },
   { name: "About Us", href: "/about" },
   { name: "Recycle", href: "/recycle" },
+  { name: "Products", href: "/products" },
   { name: "Rewards", href: "/rewards", authOnly: true },
   { name: "Contact Us", href: "/contact" },
 ];
