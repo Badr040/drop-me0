@@ -21,6 +21,7 @@ export const SignUpSchema = z
     }),
     dateOfBirth: z.string().min(1, "Date of birth is required"),
     country: z.string().min(1, "Country is required"),
+    phoneNumber: z.string().min(8, "Phone number is required"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
@@ -44,6 +45,7 @@ export default function SignUpPage() {
       gender: undefined,
       dateOfBirth: "",
       country: "",
+      phoneNumber: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -59,6 +61,7 @@ export default function SignUpPage() {
         gender: data.gender,
         dateOfBirth: data.dateOfBirth,
         country: data.country,
+        phoneNumber: data.phoneNumber,
         email: data.email,
         password: data.password,
         confirmPassword: data.confirmPassword,
@@ -154,6 +157,13 @@ export default function SignUpPage() {
               label="Email"
               type="email"
               placeholder="Email"
+            />
+
+            <CustomizeTextField
+              name="phoneNumber"
+              label="Phone Number"
+              type="tel"
+              placeholder="+20 123 456 7890"
             />
 
             <CustomizeTextField
