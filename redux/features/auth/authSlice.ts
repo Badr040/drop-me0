@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { setCookie, getCookie, deleteCookie } from "cookies-next";
+import { clearStoredToken, getStoredToken } from "@/lib/auth-token";
 
 export interface IAuthState {
   token: string | null;
