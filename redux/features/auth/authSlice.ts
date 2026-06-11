@@ -9,9 +9,7 @@ export interface IAuthState {
 
 const initialState: IAuthState = {
   token:
-    typeof window !== "undefined"
-      ? getCookie("token")?.toString() || null
-      : null,
+    typeof window !== "undefined" ? getStoredToken() || getCookie("token")?.toString() || null : null,
 
   role:
     typeof window !== "undefined"
@@ -51,6 +49,7 @@ const authSlice = createSlice({
       state.role = null;
 
       if (typeof window !== "undefined") {
+        clearStoredToken();
         deleteCookie("token", { path: "/" });
         deleteCookie("role", { path: "/" });
       }
