@@ -15,7 +15,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: API_URL,
   prepareHeaders: (headers) => {
     // Read token directly from cookies
-    const token = getCookie("token")?.toString();
+    const token = getStoredToken() || getCookie("token")?.toString();
     if (token) headers.set("authorization", `Bearer ${token}`);
     return headers;
   },
