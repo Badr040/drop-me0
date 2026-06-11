@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { toast } from "sonner";
 import { API_URL } from "@/components/constants";
 import { getCookie } from "cookies-next";
+import { getStoredToken } from "@/lib/auth-token";
 
 // Define Error Response Type
 export interface ErrorResponse {
