@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, LogIn, User } from "lucide-react";
 import Image from "next/image";
-import { getCookie } from "cookies-next";
+import { getStoredToken } from "@/lib/auth-token";
 import LogoImage from "@/public/logo.png";
 import { Button } from "./ui/button";
 import { useLogout } from "./Logout";
@@ -28,7 +28,7 @@ export function Header() {
 
   // Check token from cookies on client
   useEffect(() => {
-    setToken(getCookie("token")?.toString() || null);
+    setToken(getStoredToken());
   }, []);
 
   const filteredNavItems = navItems.filter(
