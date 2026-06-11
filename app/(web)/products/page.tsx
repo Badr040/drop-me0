@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Filter, Recycle, Search, Trophy } from "lucide-react";
-import { getCookie } from "cookies-next";
+import { getStoredToken } from "@/lib/auth-token";
 import { useGetUserPointsQuery } from "@/redux/features/profile/profileApi";
 import { OffersBanner } from "@/components/products/offers-banner";
 import { ProductCard } from "@/components/products/product-card";
@@ -20,7 +20,7 @@ export default function ProductsPage() {
   >("All");
   const [wishlist, setWishlist] = useState<number[]>([]);
 
-  const token = getCookie("token");
+  const token = getStoredToken();
   const { data: userData } = useGetUserPointsQuery(undefined, {
     skip: !token,
   });
