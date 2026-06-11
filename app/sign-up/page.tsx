@@ -3,11 +3,14 @@
 import Link from "next/link";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import AuthLayout from "@/components/layouts/authLayout";
 import { z } from "zod";
 import CustomizeTextField from "@/components/shared/CustomizeTextField";
-import { useSignUpMutation } from "@/redux/features/auth/authApi";
+import { getAuthErrorMessage, signUpUser } from "@/lib/auth-api";
 
 export const SignUpSchema = z
   .object({
@@ -21,6 +24,7 @@ export const SignUpSchema = z
     }),
     dateOfBirth: z.string().min(1, "Date of birth is required"),
     country: z.string().min(1, "Country is required"),
+    phoneNumber: z.string().min(8, "Phone number is required"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
@@ -34,7 +38,8 @@ export const SignUpSchema = z
 export type SignUpFormData = z.infer<typeof SignUpSchema>;
 
 export default function SignUpPage() {
-  const [signUpUser] = useSignUpMutation();
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const methods = useForm<SignUpFormData>({
     resolver: zodResolver(SignUpSchema),
@@ -44,6 +49,7 @@ export default function SignUpPage() {
       gender: undefined,
       dateOfBirth: "",
       country: "",
+      phoneNumber: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -52,20 +58,27 @@ export default function SignUpPage() {
   });
 
   const onSubmit = async (data: SignUpFormData) => {
+    setIsLoading(true);
+
     try {
-      signUpUser({
+      await signUpUser({
         fName: data.firstName,
         lName: data.lastName,
         gender: data.gender,
         dateOfBirth: data.dateOfBirth,
         country: data.country,
+        phone: data.phoneNumber,
         email: data.email,
         password: data.password,
         confirmPassword: data.confirmPassword,
-        role: "user",
-      }).unwrap();
-    } catch (e) {
-      console.log(e);
+      });
+
+      toast.success("Account created successfully!");
+      router.push("/login");
+    } catch (error) {
+      toast.error(getAuthErrorMessage(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -82,12 +95,14 @@ export default function SignUpPage() {
               name="firstName"
               label="First Name"
               placeholder="First Name"
+              disabled={isLoading}
             />
 
             <CustomizeTextField
               name="lastName"
               label="Last Name"
               placeholder="Last Name"
+              disabled={isLoading}
             />
 
             {/* Gender */}
@@ -98,6 +113,7 @@ export default function SignUpPage() {
                   <input
                     type="radio"
                     value="male"
+                    disabled={isLoading}
                     {...methods.register("gender")}
                   />
                   Male
@@ -107,6 +123,7 @@ export default function SignUpPage() {
                   <input
                     type="radio"
                     value="female"
+                    disabled={isLoading}
                     {...methods.register("gender")}
                   />
                   Female
@@ -126,12 +143,14 @@ export default function SignUpPage() {
               name="dateOfBirth"
               label="Date of Birth"
               type="date"
+              disabled={isLoading}
             />
 
             <div>
               <label className="text-sm mb-2 block">Country</label>
               <select
                 {...methods.register("country")}
+                disabled={isLoading}
                 className="w-full h-10 px-3 border rounded-md bg-gray-50"
               >
                 <option value="">Select Country</option>
@@ -154,6 +173,15 @@ export default function SignUpPage() {
               label="Email"
               type="email"
               placeholder="Email"
+              disabled={isLoading}
+            />
+
+            <CustomizeTextField
+              name="phoneNumber"
+              label="Phone Number"
+              type="tel"
+              placeholder="+20 123 456 7890"
+              disabled={isLoading}
             />
 
             <CustomizeTextField
@@ -161,6 +189,7 @@ export default function SignUpPage() {
               label="Password"
               type="password"
               placeholder="Password"
+              disabled={isLoading}
             />
 
             <CustomizeTextField
@@ -168,14 +197,16 @@ export default function SignUpPage() {
               label="Confirm Password"
               type="password"
               placeholder="Confirm Password"
+              disabled={isLoading}
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-primary text-white py-3 rounded-full font-medium"
+            disabled={isLoading}
+            className="w-full bg-primary text-white py-3 rounded-full font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Join
+            {isLoading ? "Creating account..." : "Join"}
           </button>
 
           <p className="text-center text-sm text-muted">

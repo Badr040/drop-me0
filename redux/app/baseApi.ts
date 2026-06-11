@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { toast } from "sonner";
 import { API_URL } from "@/components/constants";
 import { getCookie } from "cookies-next";
+import { getStoredToken } from "@/lib/auth-token";
 
 // Define Error Response Type
 export interface ErrorResponse {
@@ -14,7 +15,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: API_URL,
   prepareHeaders: (headers) => {
     // Read token directly from cookies
-    const token = getCookie("token")?.toString();
+    const token = getStoredToken() || getCookie("token")?.toString();
     if (token) headers.set("authorization", `Bearer ${token}`);
     return headers;
   },
