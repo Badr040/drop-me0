@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Filter, Recycle, Search, Trophy } from "lucide-react";
 import { getStoredToken } from "@/lib/auth-token";
@@ -12,6 +12,7 @@ import {
   PRODUCTS,
   type ProductCategory,
 } from "@/lib/products-data";
+import { useAppSelector } from "@/redux/app/hooks";
 
 export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,7 +21,13 @@ export default function ProductsPage() {
   >("All");
   const [wishlist, setWishlist] = useState<number[]>([]);
 
-  const token = getStoredToken();
+  const reduxToken = useAppSelector((state) => state.auth.token);
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    setToken(reduxToken);
+  }, [reduxToken]);
+
   const { data: userData } = useGetUserPointsQuery(undefined, {
     skip: !token,
   });

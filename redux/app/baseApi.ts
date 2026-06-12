@@ -6,8 +6,9 @@ import { getStoredToken } from "@/lib/auth-token";
 
 // Define Error Response Type
 export interface ErrorResponse {
-  errors: string[] | string;
-  status: number;
+  errors?: string[] | string;
+  message?: string;
+  status?: number;
 }
 
 // Custom fetchBaseQuery
@@ -36,12 +37,16 @@ const baseQueryWithInterceptor: typeof baseQuery = async (
       const errorResponse = error.data as ErrorResponse;
 
       if (method !== "GET") {
-        if (typeof errorResponse.errors === "string") {
+        if (typeof errorResponse.message === "string" && errorResponse.message) {
+          toast.error(errorResponse.message);
+        } else if (typeof errorResponse.errors === "string") {
           toast.error(errorResponse.errors || "Something went wrong");
-        } else {
+        } else if (Array.isArray(errorResponse.errors)) {
           errorResponse.errors.forEach((err) => {
             toast.error(err || "Something went wrong");
           });
+        } else {
+          toast.error("Something went wrong");
         }
       }
     }

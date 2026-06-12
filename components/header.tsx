@@ -9,6 +9,7 @@ import { getStoredToken } from "@/lib/auth-token";
 import LogoImage from "@/public/logo.png";
 import { Button } from "./ui/button";
 import { useLogout } from "./Logout";
+import { useAppSelector } from "@/redux/app/hooks";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -22,14 +23,15 @@ const navItems = [
 export function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const reduxToken = useAppSelector((state) => state.auth.token);
   const [token, setToken] = useState<string | null>(null);
 
   const logout = useLogout();
 
-  // Check token from cookies on client
+  // Check token on client and sync with Redux state
   useEffect(() => {
-    setToken(getStoredToken());
-  }, []);
+    setToken(reduxToken);
+  }, [reduxToken]);
 
   const filteredNavItems = navItems.filter(
     (item) => !item.authOnly || (item.authOnly && token),

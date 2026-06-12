@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { setCookie, getCookie, deleteCookie } from "cookies-next";
-import { clearStoredToken, getStoredToken } from "@/lib/auth-token";
+import { clearStoredToken, getStoredToken, setStoredToken } from "@/lib/auth-token";
 
 export interface IAuthState {
   token: string | null;
@@ -30,6 +30,8 @@ const authSlice = createSlice({
       state.role = action.payload.role;
 
       if (typeof window !== "undefined") {
+        setStoredToken(action.payload.token);
+
         // save token
         setCookie("token", action.payload.token, {
           maxAge: 60 * 60 * 24 * 7,
