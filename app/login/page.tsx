@@ -164,17 +164,19 @@ function LoginPage() {
   } = methods;
 
   const onSubmit = async (data: FormData) => {
+    setIsLoading(true);
     try {
-      loginUser({
+      await loginUser({
         email: data.email,
         phoneNumber: data.phoneNumber,
         password: data.password,
         role: "user",
       }).unwrap();
-      // route.push("/");
       toast.success("Logged in successfully!");
     } catch (e) {
-      setIsLoading(true);
+      // Error handled by baseApi interceptor
+    } finally {
+      setIsLoading(false);
     }
   };
 
