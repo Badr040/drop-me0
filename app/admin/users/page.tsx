@@ -1,17 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import  { useState } from "react";
 import {
   Search,
   Mail,
   Phone,
-  Calendar,
   Fingerprint,
-  UserCircle,
-  Activity,
-  Edit,
-  Trash,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useGetAllUserQuery } from "@/redux/features/users/usersApi";
 import CreateUser from "@/components/landing/createUser";
 import DeleteUser from "@/components/landing/deleteUser";
